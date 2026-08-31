@@ -86,6 +86,10 @@ if /i "%~1"=="clean" set "FAST="
 
 REM ---------- 5) إصلاح الحزم المعطوبة في package.json ----------
 call :step "إصلاح التبعيات المعطوبة (ريبو محذوف / رابط git لا يعمل)"
+if defined FAST if exist "node_modules\.ktm-deps-fixed" (
+  echo [تخطي] تم إصلاحها سابقا
+  goto :afterfix
+)
 if not exist "package.json.bak" copy /y "package.json" "package.json.bak" >nul
 set "FIXJS=%ROOT%fix-deps.cjs"
 if not exist "%FIXJS%" (
@@ -96,10 +100,14 @@ if not exist "%FIXJS%" (
 )
 node "%FIXJS%" "%APP%"
 if errorlevel 1 ( echo [X] فشل إصلاح package.json & goto :fail )
-
+:afterfix
 
 REM ---------- 6) تثبيت المكتبات ----------
-call :step "تثبيت المكتبات (قد يستغرق عدة دقائق)"
+call :step "تثبيت المكتبات"
+if defined FAST if exist "node_modules\electron-builder" (
+  echo [تخطي] المكتبات مثبتة مسبقا - شغّل: build-ktm.bat full  لإعادة التثبيت
+  goto :afterinstall
+)
 set "INSTALL_OK="
 where yarn >nul 2>&1 && (
   call yarn install --ignore-engines --network-timeout 600000 && set "INSTALL_OK=1"
@@ -114,9 +122,15 @@ if not defined INSTALL_OK (
 )
 if not defined INSTALL_OK ( echo [X] فشل تثبيت المكتبات - راجع الرسائل أعلاه & goto :fail )
 echo [OK] تم تثبيت المكتبات
+:afterinstall
+if not exist "node_modules\.ktm-deps-fixed" ( >"node_modules\.ktm-deps-fixed" echo ok )
 
 REM ---------- 7) بناء الإضافة الأصلية ----------
 call :step "بناء ktm-native (Rust)"
+if defined FAST if exist "ktm-native\ktm-native.node" (
+  echo [تخطي] الإضافة الأصلية مبنية مسبقا
+  goto :afternative
+)
 call node ./scripts/build-native-addon.cjs
 if errorlevel 1 (
   echo [!] فشل البناء - نحدّث Rust ونعيد المحاولة...
@@ -124,14 +138,21 @@ if errorlevel 1 (
   call node ./scripts/build-native-addon.cjs || ( echo [X] فشل بناء الإضافة الأصلية & goto :fail )
 )
 echo [OK] الإضافة الأصلية جاهزة
+:afternative
 
 REM ---------- 8) python rpc ----------
 call :step "بناء خدمة Python RPC"
+if defined FAST if exist "ktm-python-rpc\ktm-python-rpc.exe" (
+  echo [تخطي] مبنية مسبقا
+  goto :afterpython
+)
 if defined PY (
+  %PY% -m pip install --disable-pip-version-check -q cx_Freeze==7.2.3 libtorrent 2>nul
   %PY% python_rpc/setup.py build || echo [!] فشل بناء python-rpc - نكمل بدونه
 ) else (
   echo [!] تم التخطي - لا يوجد Python
 )
+:afterpython
 
 REM ---------- 9) بناء التطبيق ----------
 call :step "بناء التطبيق (electron-vite)"
@@ -140,13 +161,13 @@ if errorlevel 1 ( echo [X] فشل بناء التطبيق & goto :fail )
 echo [OK] تم البناء
 
 REM ---------- 10) مثبت NSIS ----------
-call :step "إنشاء مثبت NSIS"
-call npx --yes electron-builder --win nsis
+call :step "إنشاء مثبت NSIS (ضغط سريع)"
+set "NSISARGS=--win nsis -c.compression=store -c.nsis.differentialPackage=false -c.win.target=nsis"
+call npx --yes electron-builder %NSISARGS%
 if errorlevel 1 (
-  echo [!] فشل - نعيد المحاولة مع تعطيل التوقيع وإعادة بناء التبعيات الأصلية...
-  set "CSC_IDENTITY_AUTO_DISCOVERY=false"
+  echo [!] فشل - نعيد المحاولة مع إعادة بناء التبعيات الأصلية...
   call npx --yes electron-builder install-app-deps
-  call npx --yes electron-builder --win nsis || ( echo [X] فشل إنشاء المثبت & goto :fail )
+  call npx --yes electron-builder %NSISARGS% || ( echo [X] فشل إنشاء المثبت & goto :fail )
 )
 
 echo.
