@@ -208,6 +208,17 @@ for /f "skip=2 tokens=2,*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul'
 set "PATH=%SYSPATH%;%USRPATH%;%USERPROFILE%\.cargo\bin;%APPDATA%\npm"
 exit /b 0
 
+:findpy
+set "PY="
+py -3.12 --version >nul 2>&1 && set "PY=py -3.12" && exit /b 0
+py -3.11 --version >nul 2>&1 && set "PY=py -3.11" && exit /b 0
+for /f "tokens=2 delims= " %%v in ('python --version 2^>^&1') do set "PYVER=%%v"
+if defined PYVER (
+  echo %PYVER% | findstr /r "^3\.1[12]\." >nul && set "PY=python"
+)
+exit /b 0
+
+
 :ensurecargo
 where cargo >nul 2>&1 && exit /b 0
 if exist "%USERPROFILE%\.cargo\bin\cargo.exe" ( set "PATH=%PATH%;%USERPROFILE%\.cargo\bin" & exit /b 0 )
