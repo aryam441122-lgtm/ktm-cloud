@@ -1,7 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import ktmZip from "@/assets/KTM.zip.asset.json";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/sources", replace: true });
+  },
   head: () => ({
     meta: [
       { title: "KTM Launcher Source — تحميل المجلد الكامل" },
