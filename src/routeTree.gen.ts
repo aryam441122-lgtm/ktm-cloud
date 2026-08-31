@@ -14,6 +14,7 @@ import { Route as SourcesIndexRouteImport } from './routes/sources.index'
 import { Route as SourcesSplatRouteImport } from './routes/sources.$'
 import { Route as ApiPublicDownloadSourcesRouteImport } from './routes/api/public/download-sources'
 import { Route as ApiPublicCatalogueCategoryRouteImport } from './routes/api/public/catalogue/$category'
+import { Route as ApiPublicCatalogueSearchRouteImport } from './routes/api/public/catalogue/search'
 import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
 
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +44,12 @@ const ApiPublicCatalogueCategoryRoute =
     path: '/api/public/catalogue/$category',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCatalogueSearchRoute =
+  ApiPublicCatalogueSearchRouteImport.update({
+    id: '/api/public/catalogue/search',
+    path: '/api/public/catalogue/search',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicDownloadSourcesSyncRoute =
   ApiPublicDownloadSourcesSyncRouteImport.update({
     id: '/sync',
@@ -56,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
+  '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesByTo {
@@ -64,6 +72,7 @@ export interface FileRoutesByTo {
   '/sources': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
+  '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesById {
@@ -73,6 +82,7 @@ export interface FileRoutesById {
   '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
+  '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRouteTypes {
@@ -83,6 +93,7 @@ export interface FileRouteTypes {
     | '/sources/'
     | '/api/public/download-sources'
     | '/api/public/catalogue/$category'
+    | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -91,6 +102,7 @@ export interface FileRouteTypes {
     | '/sources'
     | '/api/public/download-sources'
     | '/api/public/catalogue/$category'
+    | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
   id:
     | '__root__'
@@ -99,6 +111,7 @@ export interface FileRouteTypes {
     | '/sources/'
     | '/api/public/download-sources'
     | '/api/public/catalogue/$category'
+    | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
   fileRoutesById: FileRoutesById
 }
@@ -108,6 +121,7 @@ export interface RootRouteChildren {
   SourcesIndexRoute: typeof SourcesIndexRoute
   ApiPublicDownloadSourcesRoute: typeof ApiPublicDownloadSourcesRouteWithChildren
   ApiPublicCatalogueCategoryRoute: typeof ApiPublicCatalogueCategoryRoute
+  ApiPublicCatalogueSearchRoute: typeof ApiPublicCatalogueSearchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogueCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/catalogue/search': {
+      id: '/api/public/catalogue/search'
+      path: '/api/public/catalogue/search'
+      fullPath: '/api/public/catalogue/search'
+      preLoaderRoute: typeof ApiPublicCatalogueSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/download-sources/sync': {
       id: '/api/public/download-sources/sync'
       path: '/sync'
@@ -177,6 +198,7 @@ const rootRouteChildren: RootRouteChildren = {
   SourcesIndexRoute: SourcesIndexRoute,
   ApiPublicDownloadSourcesRoute: ApiPublicDownloadSourcesRouteWithChildren,
   ApiPublicCatalogueCategoryRoute: ApiPublicCatalogueCategoryRoute,
+  ApiPublicCatalogueSearchRoute: ApiPublicCatalogueSearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
