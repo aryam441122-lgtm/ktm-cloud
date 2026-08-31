@@ -396,7 +396,16 @@ export class DownloadManager {
     download?: Download,
     downloadsToSeed?: Download[]
   ) {
-    await PythonRPC.spawn();
+    try {
+      await PythonRPC.spawn();
+    } catch (error) {
+      logger.error(
+        "[DownloadManager] Python RPC unavailable, torrent features disabled:",
+        error
+      );
+      return;
+    }
+
 
     await this.applyNetworkInterface();
 

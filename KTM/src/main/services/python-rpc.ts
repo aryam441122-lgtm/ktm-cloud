@@ -323,13 +323,13 @@ export class PythonRPC {
 
       if (!fs.existsSync(binaryPath)) {
         dialog.showErrorBox(
-          "Fatal",
-          "KTM Python Instance binary not found. Please check if it has been removed by Windows Defender."
+          "Torrent engine unavailable",
+          "KTM Python Instance binary not found. Torrent downloads will be disabled, but the app will keep running.\n\nTo enable them, rebuild the app with the Python RPC step completed."
         );
 
-        app.quit();
         throw new Error(`KTM Python RPC binary not found at ${binaryPath}`);
       }
+
 
       const childProcess = cp.spawn(binaryPath, commonArgs, {
         windowsHide: true,

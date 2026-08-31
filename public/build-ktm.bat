@@ -50,18 +50,24 @@ call :ensurecargo
 where cargo >nul 2>&1 || ( echo [X] فشل تثبيت Rust. ثبّته من https://rustup.rs ثم أعد تشغيل الملف & goto :fail )
 for /f "delims=" %%v in ('cargo --version') do echo [OK] %%v
 
-REM ---------- 4) Python ----------
-call :step "فحص Python"
-set "PY="
-where python >nul 2>&1 && set "PY=python"
-if not defined PY where python3 >nul 2>&1 && set "PY=python3"
+REM ---------- 4) Python (cx_Freeze يحتاج 3.11 أو 3.12 - لا يعمل على 3.13/3.14) ----------
+call :step "فحص Python المناسب لبناء خدمة التورنت"
+call :findpy
 if not defined PY (
-  echo [!] Python غير مثبت - جاري التثبيت...
-  winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements
+  echo [!] لا يوجد Python 3.12 - جاري تثبيته تلقائيا...
+  where winget >nul 2>&1 && winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements
   call :refreshpath
-  where python >nul 2>&1 && set "PY=python"
+  call :findpy
 )
-if defined PY (for /f "delims=" %%v in ('%PY% --version') do echo [OK] %%v) else (echo [!] بدون Python سيتم تخطي بناء python-rpc)
+if not defined PY (
+  echo [!] نجرب التنزيل المباشر لـ Python 3.12...
+  curl -sSfLo "%TEMP%\py312.exe" https://www.python.org/ftp/python/3.12.8/python-3.12.8-amd64.exe
+  if exist "%TEMP%\py312.exe" "%TEMP%\py312.exe" /quiet InstallAllUsers=0 PrependPath=1 Include_launcher=1
+  call :refreshpath
+  call :findpy
+)
+if defined PY (for /f "delims=" %%v in ('%PY% --version') do echo [OK] %%v) else (echo [!] بدون Python 3.12 سيتم تخطي بناء python-rpc - ميزة التورنت لن تعمل)
+
 
 REM ---------- 4.5) ملف .env (بدونه يطلع خطأ JavaScript عند فتح البرنامج) ----------
 call :step "التحقق من ملف .env"
@@ -141,18 +147,31 @@ echo [OK] الإضافة الأصلية جاهزة
 :afternative
 
 REM ---------- 8) python rpc ----------
-call :step "بناء خدمة Python RPC"
+call :step "بناء خدمة Python RPC (محرك التورنت)"
 if defined FAST if exist "ktm-python-rpc\ktm-python-rpc.exe" (
   echo [تخطي] مبنية مسبقا
   goto :afterpython
 )
+set "PYRPC_OK="
 if defined PY (
-  %PY% -m pip install --disable-pip-version-check -q cx_Freeze==7.2.3 libtorrent 2>nul
-  %PY% python_rpc/setup.py build || echo [!] فشل بناء python-rpc - نكمل بدونه
+  %PY% -m pip install --upgrade --disable-pip-version-check -q pip setuptools wheel
+  %PY% -m pip install --disable-pip-version-check cx_Freeze==7.2.3 libtorrent
+  if errorlevel 1 (
+    echo [!] فشل تثبيت cx_Freeze/libtorrent على هذه النسخة من Python
+  ) else (
+    %PY% python_rpc/setup.py build && set "PYRPC_OK=1"
+  )
 ) else (
-  echo [!] تم التخطي - لا يوجد Python
+  echo [!] تم التخطي - لا يوجد Python مناسب
+)
+if exist "ktm-python-rpc\ktm-python-rpc.exe" set "PYRPC_OK=1"
+if defined PYRPC_OK (
+  echo [OK] محرك التورنت جاهز
+) else (
+  echo [!] لم يُبنَ محرك التورنت - التطبيق سيعمل لكن تحميل التورنت معطل
 )
 :afterpython
+
 
 REM ---------- 9) بناء التطبيق ----------
 call :step "بناء التطبيق (electron-vite)"
@@ -188,6 +207,17 @@ for /f "skip=2 tokens=2,*" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Con
 for /f "skip=2 tokens=2,*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USRPATH=%%b"
 set "PATH=%SYSPATH%;%USRPATH%;%USERPROFILE%\.cargo\bin;%APPDATA%\npm"
 exit /b 0
+
+:findpy
+set "PY="
+py -3.12 --version >nul 2>&1 && set "PY=py -3.12" && exit /b 0
+py -3.11 --version >nul 2>&1 && set "PY=py -3.11" && exit /b 0
+for /f "tokens=2 delims= " %%v in ('python --version 2^>^&1') do set "PYVER=%%v"
+if defined PYVER (
+  echo %PYVER% | findstr /r "^3\.1[12]\." >nul && set "PY=python"
+)
+exit /b 0
+
 
 :ensurecargo
 where cargo >nul 2>&1 && exit /b 0
