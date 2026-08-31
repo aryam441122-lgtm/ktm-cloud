@@ -69,18 +69,16 @@ if not defined PY (
 if defined PY (for /f "delims=" %%v in ('%PY% --version') do echo [OK] %%v) else (echo [!] بدون Python 3.12 سيتم تخطي بناء python-rpc - ميزة التورنت لن تعمل)
 
 
-REM ---------- 4.5) ملف .env (بدونه يطلع خطأ JavaScript عند فتح البرنامج) ----------
-call :step "التحقق من ملف .env"
-if not exist ".env" (
-  echo [!] .env غير موجود - جاري إنشاؤه بقيم افتراضية...
-  > ".env" echo MAIN_VITE_API_URL=https://api.ktmlauncher.gg
-  >> ".env" echo MAIN_VITE_AUTH_URL=https://auth.ktmlauncher.gg
-  >> ".env" echo MAIN_VITE_CHECKOUT_URL=https://ktmlauncher.gg/checkout
-  >> ".env" echo MAIN_VITE_ANALYTICS_API_URL=https://api.ktmlauncher.gg
-  >> ".env" echo MAIN_VITE_EXTERNAL_RESOURCES_URL=https://cdn.ktmlauncher.gg
-  >> ".env" echo MAIN_VITE_LAUNCHER_SUBDOMAIN=ktmlauncher.gg
-)
+REM ---------- 4.5) ملف .env (يشير لخوادم KTM Cloud) ----------
+call :step "كتابة ملف .env"
+> ".env" echo MAIN_VITE_API_URL=https://ktm-cloud.lovable.app/api/public
+>> ".env" echo MAIN_VITE_AUTH_URL=https://ktm-cloud.lovable.app/auth
+>> ".env" echo MAIN_VITE_CHECKOUT_URL=https://ktm-cloud.lovable.app/checkout
+>> ".env" echo MAIN_VITE_ANALYTICS_API_URL=https://ktm-cloud.lovable.app/api/public
+>> ".env" echo MAIN_VITE_EXTERNAL_RESOURCES_URL=https://ktm-cloud.lovable.app
+>> ".env" echo MAIN_VITE_LAUNCHER_SUBDOMAIN=ktm-cloud.lovable.app
 echo [OK] .env جاهز
+
 
 REM ---------- تسريع: كاش إلكترون + تعطيل التوقيع ----------
 set "ELECTRON_CACHE=%LOCALAPPDATA%\electron"
