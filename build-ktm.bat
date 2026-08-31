@@ -63,6 +63,27 @@ if not defined PY (
 )
 if defined PY (for /f "delims=" %%v in ('%PY% --version') do echo [OK] %%v) else (echo [!] بدون Python سيتم تخطي بناء python-rpc)
 
+REM ---------- 4.5) ملف .env (بدونه يطلع خطأ JavaScript عند فتح البرنامج) ----------
+call :step "التحقق من ملف .env"
+if not exist ".env" (
+  echo [!] .env غير موجود - جاري إنشاؤه بقيم افتراضية...
+  > ".env" echo MAIN_VITE_API_URL=https://api.ktmlauncher.gg
+  >> ".env" echo MAIN_VITE_AUTH_URL=https://auth.ktmlauncher.gg
+  >> ".env" echo MAIN_VITE_CHECKOUT_URL=https://ktmlauncher.gg/checkout
+  >> ".env" echo MAIN_VITE_ANALYTICS_API_URL=https://api.ktmlauncher.gg
+  >> ".env" echo MAIN_VITE_EXTERNAL_RESOURCES_URL=https://cdn.ktmlauncher.gg
+  >> ".env" echo MAIN_VITE_LAUNCHER_SUBDOMAIN=ktmlauncher.gg
+)
+echo [OK] .env جاهز
+
+REM ---------- تسريع: كاش إلكترون + تعطيل التوقيع ----------
+set "ELECTRON_CACHE=%LOCALAPPDATA%\electron"
+set "ELECTRON_BUILDER_CACHE=%LOCALAPPDATA%\electron-builder\Cache"
+set "CSC_IDENTITY_AUTO_DISCOVERY=false"
+set "FAST=1"
+if /i "%~1"=="full" set "FAST="
+if /i "%~1"=="clean" set "FAST="
+
 REM ---------- 5) إصلاح الحزم المعطوبة في package.json ----------
 call :step "إصلاح التبعيات المعطوبة (ريبو محذوف / رابط git لا يعمل)"
 if not exist "package.json.bak" copy /y "package.json" "package.json.bak" >nul
