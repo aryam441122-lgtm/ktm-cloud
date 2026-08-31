@@ -5,6 +5,7 @@ import type { DownloadSource } from "@types";
 import { logger } from "@main/services";
 import axios from "axios";
 import crypto from "node:crypto";
+import { DownloadSourceStatus } from "@shared";
 
 const idFromUrl = (url: string) => {
   const hex = crypto.createHash("sha1").update(url).digest("hex");
@@ -36,7 +37,7 @@ const buildSourceFromUrl = async (url: string): Promise<DownloadSource> => {
     id: idFromUrl(url),
     name,
     url,
-    status: 0 as DownloadSource["status"],
+    status: DownloadSourceStatus.Matched,
     downloadCount: payload.downloads.length,
     createdAt: new Date().toISOString(),
   };

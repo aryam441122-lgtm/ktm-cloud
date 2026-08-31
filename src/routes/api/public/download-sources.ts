@@ -74,7 +74,7 @@ export const Route = createFileRoute("/api/public/download-sources")({
             id: await idFromUrl(parsed.url),
             name,
             url: parsed.url,
-            status: "UP_TO_DATE",
+            status: "MATCHED",
             downloadCount: json.downloads.length,
             createdAt: new Date().toISOString(),
           },
