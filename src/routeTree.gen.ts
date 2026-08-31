@@ -17,6 +17,7 @@ import { Route as ApiPublicCatalogueCategoryRouteImport } from './routes/api/pub
 import { Route as ApiPublicCatalogueSearchRouteImport } from './routes/api/public/catalogue/search'
 import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
 import { Route as ApiPublicGamesShopDetailsRouteImport } from './routes/api/public/games/shop-details'
+import { Route as ApiPublicHostersAvailabilityRouteImport } from './routes/api/public/hosters/availability'
 import { Route as ApiPublicGamesShopObjectIdRouteImport } from './routes/api/public/games/$shop/$objectId'
 import { Route as ApiPublicGamesShopObjectIdAssetsRouteImport } from './routes/api/public/games/$shop/$objectId/assets'
 import { Route as ApiPublicGamesShopObjectIdDownloadSourcesRouteImport } from './routes/api/public/games/$shop/$objectId/download-sources'
@@ -67,6 +68,12 @@ const ApiPublicGamesShopDetailsRoute =
     path: '/api/public/games/shop-details',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHostersAvailabilityRoute =
+  ApiPublicHostersAvailabilityRouteImport.update({
+    id: '/api/public/hosters/availability',
+    path: '/api/public/hosters/availability',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicGamesShopObjectIdRoute =
   ApiPublicGamesShopObjectIdRouteImport.update({
     id: '/api/public/games/$shop/$objectId',
@@ -101,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
   '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
+  '/api/public/hosters/availability': typeof ApiPublicHostersAvailabilityRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/download-sources': typeof ApiPublicGamesShopObjectIdDownloadSourcesRoute
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
   '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
+  '/api/public/hosters/availability': typeof ApiPublicHostersAvailabilityRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/download-sources': typeof ApiPublicGamesShopObjectIdDownloadSourcesRoute
@@ -130,6 +139,7 @@ export interface FileRoutesById {
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
   '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
+  '/api/public/hosters/availability': typeof ApiPublicHostersAvailabilityRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/download-sources': typeof ApiPublicGamesShopObjectIdDownloadSourcesRoute
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
     | '/api/public/games/shop-details'
+    | '/api/public/hosters/availability'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/download-sources'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
     | '/api/public/games/shop-details'
+    | '/api/public/hosters/availability'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/download-sources'
@@ -174,6 +186,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
     | '/api/public/games/shop-details'
+    | '/api/public/hosters/availability'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/download-sources'
@@ -188,6 +201,7 @@ export interface RootRouteChildren {
   ApiPublicCatalogueCategoryRoute: typeof ApiPublicCatalogueCategoryRoute
   ApiPublicCatalogueSearchRoute: typeof ApiPublicCatalogueSearchRoute
   ApiPublicGamesShopDetailsRoute: typeof ApiPublicGamesShopDetailsRoute
+  ApiPublicHostersAvailabilityRoute: typeof ApiPublicHostersAvailabilityRoute
   ApiPublicGamesShopObjectIdRoute: typeof ApiPublicGamesShopObjectIdRouteWithChildren
 }
 
@@ -247,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/games/shop-details'
       fullPath: '/api/public/games/shop-details'
       preLoaderRoute: typeof ApiPublicGamesShopDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hosters/availability': {
+      id: '/api/public/hosters/availability'
+      path: '/api/public/hosters/availability'
+      fullPath: '/api/public/hosters/availability'
+      preLoaderRoute: typeof ApiPublicHostersAvailabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/games/$shop/$objectId': {
@@ -322,6 +343,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCatalogueCategoryRoute: ApiPublicCatalogueCategoryRoute,
   ApiPublicCatalogueSearchRoute: ApiPublicCatalogueSearchRoute,
   ApiPublicGamesShopDetailsRoute: ApiPublicGamesShopDetailsRoute,
+  ApiPublicHostersAvailabilityRoute: ApiPublicHostersAvailabilityRoute,
   ApiPublicGamesShopObjectIdRoute: ApiPublicGamesShopObjectIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
