@@ -86,3 +86,27 @@ export const searchSteam = async (term: string): Promise<FeaturedItem[]> => {
   const body = (await res.json()) as { items?: { id: number; name: string }[] };
   return (body.items ?? []).filter((i) => i && i.id && i.name);
 };
+
+const titleCache = new Map<string, { at: number; title: string }>();
+
+export const getSteamTitle = async (objectId: string): Promise<string | null> => {
+  const cached = titleCache.get(objectId);
+  if (cached && Date.now() - cached.at < 1000 * 60 * 60 * 24) return cached.title;
+
+  try {
+    const res = await fetch(
+      `https://store.steampowered.com/api/appdetails?appids=${objectId}&l=en`
+    );
+    if (!res.ok) return null;
+    const body = (await res.json()) as Record<
+      string,
+      { success?: boolean; data?: { name?: string } }
+    >;
+    const name = body[objectId]?.data?.name;
+    if (!name) return null;
+    titleCache.set(objectId, { at: Date.now(), title: name });
+    return name;
+  } catch {
+    return null;
+  }
+};
