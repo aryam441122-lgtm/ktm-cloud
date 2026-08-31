@@ -8,7 +8,8 @@ const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const pkgPath = path.join(__dirname, "KTM", "package.json");
+const appDir = process.argv[2] || path.join(__dirname, "KTM");
+const pkgPath = path.join(appDir, "package.json");
 const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
 
 // بدائل npm معروفة للحزم التي كانت تُثبَّت من git
