@@ -147,18 +147,31 @@ echo [OK] الإضافة الأصلية جاهزة
 :afternative
 
 REM ---------- 8) python rpc ----------
-call :step "بناء خدمة Python RPC"
+call :step "بناء خدمة Python RPC (محرك التورنت)"
 if defined FAST if exist "ktm-python-rpc\ktm-python-rpc.exe" (
   echo [تخطي] مبنية مسبقا
   goto :afterpython
 )
+set "PYRPC_OK="
 if defined PY (
-  %PY% -m pip install --disable-pip-version-check -q cx_Freeze==7.2.3 libtorrent 2>nul
-  %PY% python_rpc/setup.py build || echo [!] فشل بناء python-rpc - نكمل بدونه
+  %PY% -m pip install --upgrade --disable-pip-version-check -q pip setuptools wheel
+  %PY% -m pip install --disable-pip-version-check cx_Freeze==7.2.3 libtorrent
+  if errorlevel 1 (
+    echo [!] فشل تثبيت cx_Freeze/libtorrent على هذه النسخة من Python
+  ) else (
+    %PY% python_rpc/setup.py build && set "PYRPC_OK=1"
+  )
 ) else (
-  echo [!] تم التخطي - لا يوجد Python
+  echo [!] تم التخطي - لا يوجد Python مناسب
+)
+if exist "ktm-python-rpc\ktm-python-rpc.exe" set "PYRPC_OK=1"
+if defined PYRPC_OK (
+  echo [OK] محرك التورنت جاهز
+) else (
+  echo [!] لم يُبنَ محرك التورنت - التطبيق سيعمل لكن تحميل التورنت معطل
 )
 :afterpython
+
 
 REM ---------- 9) بناء التطبيق ----------
 call :step "بناء التطبيق (electron-vite)"
