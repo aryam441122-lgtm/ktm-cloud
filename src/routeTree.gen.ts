@@ -16,6 +16,7 @@ import { Route as ApiPublicDownloadSourcesRouteImport } from './routes/api/publi
 import { Route as ApiPublicCatalogueCategoryRouteImport } from './routes/api/public/catalogue/$category'
 import { Route as ApiPublicCatalogueSearchRouteImport } from './routes/api/public/catalogue/search'
 import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
+import { Route as ApiPublicGamesShopDetailsRouteImport } from './routes/api/public/games/shop-details'
 import { Route as ApiPublicGamesShopObjectIdRouteImport } from './routes/api/public/games/$shop/$objectId'
 import { Route as ApiPublicGamesShopObjectIdAssetsRouteImport } from './routes/api/public/games/$shop/$objectId/assets'
 import { Route as ApiPublicGamesShopObjectIdStatsRouteImport } from './routes/api/public/games/$shop/$objectId/stats'
@@ -59,6 +60,12 @@ const ApiPublicDownloadSourcesSyncRoute =
     path: '/sync',
     getParentRoute: () => ApiPublicDownloadSourcesRoute,
   } as any)
+const ApiPublicGamesShopDetailsRoute =
+  ApiPublicGamesShopDetailsRouteImport.update({
+    id: '/api/public/games/shop-details',
+    path: '/api/public/games/shop-details',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicGamesShopObjectIdRoute =
   ApiPublicGamesShopObjectIdRouteImport.update({
     id: '/api/public/games/$shop/$objectId',
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
+  '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/stats': typeof ApiPublicGamesShopObjectIdStatsRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
+  '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/stats': typeof ApiPublicGamesShopObjectIdStatsRoute
@@ -111,6 +120,7 @@ export interface FileRoutesById {
   '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/catalogue/search': typeof ApiPublicCatalogueSearchRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
+  '/api/public/games/shop-details': typeof ApiPublicGamesShopDetailsRoute
   '/api/public/games/$shop/$objectId': typeof ApiPublicGamesShopObjectIdRouteWithChildren
   '/api/public/games/$shop/$objectId/assets': typeof ApiPublicGamesShopObjectIdAssetsRoute
   '/api/public/games/$shop/$objectId/stats': typeof ApiPublicGamesShopObjectIdStatsRoute
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/$category'
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
+    | '/api/public/games/shop-details'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/stats'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/$category'
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
+    | '/api/public/games/shop-details'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/stats'
@@ -149,6 +161,7 @@ export interface FileRouteTypes {
     | '/api/public/catalogue/$category'
     | '/api/public/catalogue/search'
     | '/api/public/download-sources/sync'
+    | '/api/public/games/shop-details'
     | '/api/public/games/$shop/$objectId'
     | '/api/public/games/$shop/$objectId/assets'
     | '/api/public/games/$shop/$objectId/stats'
@@ -161,6 +174,7 @@ export interface RootRouteChildren {
   ApiPublicDownloadSourcesRoute: typeof ApiPublicDownloadSourcesRouteWithChildren
   ApiPublicCatalogueCategoryRoute: typeof ApiPublicCatalogueCategoryRoute
   ApiPublicCatalogueSearchRoute: typeof ApiPublicCatalogueSearchRoute
+  ApiPublicGamesShopDetailsRoute: typeof ApiPublicGamesShopDetailsRoute
   ApiPublicGamesShopObjectIdRoute: typeof ApiPublicGamesShopObjectIdRouteWithChildren
 }
 
@@ -214,6 +228,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/download-sources/sync'
       preLoaderRoute: typeof ApiPublicDownloadSourcesSyncRouteImport
       parentRoute: typeof ApiPublicDownloadSourcesRoute
+    }
+    '/api/public/games/shop-details': {
+      id: '/api/public/games/shop-details'
+      path: '/api/public/games/shop-details'
+      fullPath: '/api/public/games/shop-details'
+      preLoaderRoute: typeof ApiPublicGamesShopDetailsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/games/$shop/$objectId': {
       id: '/api/public/games/$shop/$objectId'
@@ -277,6 +298,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicDownloadSourcesRoute: ApiPublicDownloadSourcesRouteWithChildren,
   ApiPublicCatalogueCategoryRoute: ApiPublicCatalogueCategoryRoute,
   ApiPublicCatalogueSearchRoute: ApiPublicCatalogueSearchRoute,
+  ApiPublicGamesShopDetailsRoute: ApiPublicGamesShopDetailsRoute,
   ApiPublicGamesShopObjectIdRoute: ApiPublicGamesShopObjectIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
