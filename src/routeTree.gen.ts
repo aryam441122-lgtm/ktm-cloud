@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SourcesIndexRouteImport } from './routes/sources.index'
 import { Route as SourcesSplatRouteImport } from './routes/sources.$'
 import { Route as ApiPublicDownloadSourcesRouteImport } from './routes/api/public/download-sources'
+import { Route as ApiPublicCatalogueCategoryRouteImport } from './routes/api/public/catalogue/$category'
 import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
 
 const IndexRoute = IndexRouteImport.update({
@@ -36,6 +37,12 @@ const ApiPublicDownloadSourcesRoute =
     path: '/api/public/download-sources',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCatalogueCategoryRoute =
+  ApiPublicCatalogueCategoryRouteImport.update({
+    id: '/api/public/catalogue/$category',
+    path: '/api/public/catalogue/$category',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicDownloadSourcesSyncRoute =
   ApiPublicDownloadSourcesSyncRouteImport.update({
     id: '/sync',
@@ -48,6 +55,7 @@ export interface FileRoutesByFullPath {
   '/sources/$': typeof SourcesSplatRoute
   '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesByTo {
@@ -55,6 +63,7 @@ export interface FileRoutesByTo {
   '/sources/$': typeof SourcesSplatRoute
   '/sources': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesById {
@@ -63,6 +72,7 @@ export interface FileRoutesById {
   '/sources/$': typeof SourcesSplatRoute
   '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/catalogue/$category': typeof ApiPublicCatalogueCategoryRoute
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRouteTypes {
@@ -72,6 +82,7 @@ export interface FileRouteTypes {
     | '/sources/$'
     | '/sources/'
     | '/api/public/download-sources'
+    | '/api/public/catalogue/$category'
     | '/api/public/download-sources/sync'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -79,6 +90,7 @@ export interface FileRouteTypes {
     | '/sources/$'
     | '/sources'
     | '/api/public/download-sources'
+    | '/api/public/catalogue/$category'
     | '/api/public/download-sources/sync'
   id:
     | '__root__'
@@ -86,6 +98,7 @@ export interface FileRouteTypes {
     | '/sources/$'
     | '/sources/'
     | '/api/public/download-sources'
+    | '/api/public/catalogue/$category'
     | '/api/public/download-sources/sync'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +107,7 @@ export interface RootRouteChildren {
   SourcesSplatRoute: typeof SourcesSplatRoute
   SourcesIndexRoute: typeof SourcesIndexRoute
   ApiPublicDownloadSourcesRoute: typeof ApiPublicDownloadSourcesRouteWithChildren
+  ApiPublicCatalogueCategoryRoute: typeof ApiPublicCatalogueCategoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -126,6 +140,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDownloadSourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/catalogue/$category': {
+      id: '/api/public/catalogue/$category'
+      path: '/api/public/catalogue/$category'
+      fullPath: '/api/public/catalogue/$category'
+      preLoaderRoute: typeof ApiPublicCatalogueCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/download-sources/sync': {
       id: '/api/public/download-sources/sync'
       path: '/sync'
@@ -155,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   SourcesSplatRoute: SourcesSplatRoute,
   SourcesIndexRoute: SourcesIndexRoute,
   ApiPublicDownloadSourcesRoute: ApiPublicDownloadSourcesRouteWithChildren,
+  ApiPublicCatalogueCategoryRoute: ApiPublicCatalogueCategoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
