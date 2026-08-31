@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/public/catalogue/$category")({
         const take = Math.min(Number(url.searchParams.get("take") ?? 12) || 12, 50);
         const skip = Math.max(Number(url.searchParams.get("skip") ?? 0) || 0, 0);
 
-        const keys = CATEGORY_MAP[params.category] ?? CATEGORY_MAP.hot;
+        const keys = CATEGORY_MAP[params.category] ?? CATEGORY_MAP['hot'] ?? [];
 
         try {
           const featured = await getFeatured();

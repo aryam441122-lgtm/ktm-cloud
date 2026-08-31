@@ -19,9 +19,9 @@ export const Route = createFileRoute("/api/public/catalogue/search")({
           body = {};
         }
 
-        const title = typeof body.title === "string" ? body.title.trim() : "";
-        const take = Math.min(Number(body.take ?? 24) || 24, 60);
-        const skip = Math.max(Number(body.skip ?? 0) || 0, 0);
+        const title = typeof body['title'] === "string" ? (body['title'] as string).trim() : "";
+        const take = Math.min(Number(body['take'] ?? 24) || 24, 60);
+        const skip = Math.max(Number(body['skip'] ?? 0) || 0, 0);
 
         try {
           let items: { id: number; name: string }[] = [];
