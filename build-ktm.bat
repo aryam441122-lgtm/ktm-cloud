@@ -66,8 +66,16 @@ if defined PY (for /f "delims=" %%v in ('%PY% --version') do echo [OK] %%v) else
 REM ---------- 5) إصلاح الحزم المعطوبة في package.json ----------
 call :step "إصلاح التبعيات المعطوبة (ريبو محذوف / رابط git لا يعمل)"
 if not exist "package.json.bak" copy /y "package.json" "package.json.bak" >nul
-node "%ROOT%fix-deps.cjs"
+set "FIXJS=%ROOT%fix-deps.cjs"
+if not exist "%FIXJS%" (
+  echo [!] لم أجد fix-deps.cjs - سيتم إنشاؤه تلقائيا...
+  set "FIXJS=%TEMP%\ktm-fix-deps.cjs"
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "$l=Get-Content -LiteralPath '%~f0'; $i=[array]::IndexOf($l,'REM @@JSSTART@@'); $j=[array]::IndexOf($l,'REM @@JSEND@@'); if($i -lt 0 -or $j -lt 0){exit 1}; $l[($i+1)..($j-1)] | Set-Content -LiteralPath $env:TEMP'\ktm-fix-deps.cjs' -Encoding UTF8"
+  if errorlevel 1 ( echo [X] تعذر إنشاء ملف الإصلاح & goto :fail )
+)
+node "%FIXJS%" "%APP%"
 if errorlevel 1 ( echo [X] فشل إصلاح package.json & goto :fail )
+
 
 REM ---------- 6) تثبيت المكتبات ----------
 call :step "تثبيت المكتبات (قد يستغرق عدة دقائق)"
