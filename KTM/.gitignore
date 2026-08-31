@@ -1,0 +1,25 @@
+.vscode/
+node_modules/
+__pycache__
+dist
+out
+.DS_Store
+*.log*
+*.tsbuildinfo
+.env
+.vite
+ludusavi/**
+!ludusavi/config.yaml
+ktm-python-rpc/
+/ktm-native/
+native/ktm-native/target/
+.python-version
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+*storybook.log
+Future-updates.md
+TO-DO.md
+.planning/
+.claude/
