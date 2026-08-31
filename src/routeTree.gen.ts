@@ -10,33 +10,77 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SourcesSplatRouteImport } from './routes/sources.$'
+import { Route as ApiPublicDownloadSourcesRouteImport } from './routes/api/public/download-sources'
+import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SourcesSplatRoute = SourcesSplatRouteImport.update({
+  id: '/sources/$',
+  path: '/sources/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDownloadSourcesRoute =
+  ApiPublicDownloadSourcesRouteImport.update({
+    id: '/api/public/download-sources',
+    path: '/api/public/download-sources',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicDownloadSourcesSyncRoute =
+  ApiPublicDownloadSourcesSyncRouteImport.update({
+    id: '/sync',
+    path: '/sync',
+    getParentRoute: () => ApiPublicDownloadSourcesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/sources/$': typeof SourcesSplatRoute
+  '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sources/$': typeof SourcesSplatRoute
+  '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/sources/$': typeof SourcesSplatRoute
+  '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
+  '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/sources/$'
+    | '/api/public/download-sources'
+    | '/api/public/download-sources/sync'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/sources/$'
+    | '/api/public/download-sources'
+    | '/api/public/download-sources/sync'
+  id:
+    | '__root__'
+    | '/'
+    | '/sources/$'
+    | '/api/public/download-sources'
+    | '/api/public/download-sources/sync'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SourcesSplatRoute: typeof SourcesSplatRoute
+  ApiPublicDownloadSourcesRoute: typeof ApiPublicDownloadSourcesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +92,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sources/$': {
+      id: '/sources/$'
+      path: '/sources/$'
+      fullPath: '/sources/$'
+      preLoaderRoute: typeof SourcesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/download-sources': {
+      id: '/api/public/download-sources'
+      path: '/api/public/download-sources'
+      fullPath: '/api/public/download-sources'
+      preLoaderRoute: typeof ApiPublicDownloadSourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/download-sources/sync': {
+      id: '/api/public/download-sources/sync'
+      path: '/sync'
+      fullPath: '/api/public/download-sources/sync'
+      preLoaderRoute: typeof ApiPublicDownloadSourcesSyncRouteImport
+      parentRoute: typeof ApiPublicDownloadSourcesRoute
+    }
   }
 }
 
+interface ApiPublicDownloadSourcesRouteChildren {
+  ApiPublicDownloadSourcesSyncRoute: typeof ApiPublicDownloadSourcesSyncRoute
+}
+
+const ApiPublicDownloadSourcesRouteChildren: ApiPublicDownloadSourcesRouteChildren =
+  {
+    ApiPublicDownloadSourcesSyncRoute: ApiPublicDownloadSourcesSyncRoute,
+  }
+
+const ApiPublicDownloadSourcesRouteWithChildren =
+  ApiPublicDownloadSourcesRoute._addFileChildren(
+    ApiPublicDownloadSourcesRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SourcesSplatRoute: SourcesSplatRoute,
+  ApiPublicDownloadSourcesRoute: ApiPublicDownloadSourcesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
