@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SourcesIndexRouteImport } from './routes/sources.index'
 import { Route as SourcesSplatRouteImport } from './routes/sources.$'
 import { Route as ApiPublicDownloadSourcesRouteImport } from './routes/api/public/download-sources'
 import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/public/download-sources.sync'
@@ -17,6 +18,11 @@ import { Route as ApiPublicDownloadSourcesSyncRouteImport } from './routes/api/p
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SourcesIndexRoute = SourcesIndexRouteImport.update({
+  id: '/sources/',
+  path: '/sources/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SourcesSplatRoute = SourcesSplatRouteImport.update({
@@ -40,12 +46,14 @@ const ApiPublicDownloadSourcesSyncRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sources/$': typeof SourcesSplatRoute
+  '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sources/$': typeof SourcesSplatRoute
+  '/sources': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
@@ -53,6 +61,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sources/$': typeof SourcesSplatRoute
+  '/sources/': typeof SourcesIndexRoute
   '/api/public/download-sources': typeof ApiPublicDownloadSourcesRouteWithChildren
   '/api/public/download-sources/sync': typeof ApiPublicDownloadSourcesSyncRoute
 }
@@ -61,18 +70,21 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sources/$'
+    | '/sources/'
     | '/api/public/download-sources'
     | '/api/public/download-sources/sync'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/sources/$'
+    | '/sources'
     | '/api/public/download-sources'
     | '/api/public/download-sources/sync'
   id:
     | '__root__'
     | '/'
     | '/sources/$'
+    | '/sources/'
     | '/api/public/download-sources'
     | '/api/public/download-sources/sync'
   fileRoutesById: FileRoutesById
@@ -80,6 +92,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SourcesSplatRoute: typeof SourcesSplatRoute
+  SourcesIndexRoute: typeof SourcesIndexRoute
   ApiPublicDownloadSourcesRoute: typeof ApiPublicDownloadSourcesRouteWithChildren
 }
 
@@ -90,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sources/': {
+      id: '/sources/'
+      path: '/sources'
+      fullPath: '/sources/'
+      preLoaderRoute: typeof SourcesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sources/$': {
@@ -133,6 +153,7 @@ const ApiPublicDownloadSourcesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SourcesSplatRoute: SourcesSplatRoute,
+  SourcesIndexRoute: SourcesIndexRoute,
   ApiPublicDownloadSourcesRoute: ApiPublicDownloadSourcesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
